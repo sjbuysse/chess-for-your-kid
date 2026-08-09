@@ -1,7 +1,7 @@
 # Handoff: Chess Moves Teaching Cards (Printable Deck)
 
 ## Overview
-A 56-card printable teaching deck (No Stress Chess style) for learning how chess pieces move. Pawn, Knight, Bishop, Rook, Queen, King, and "Play It Again" cards, each showing a 5x5 mini board with movement arrows. Laid out 8-up on US Letter landscape pages, ready to print and cut.
+A 56-card printable teaching deck for learning how chess pieces move, played with a shuffled draw pile instead of taking turns by choice. Pawn, Knight, Bishop, Rook, Queen, King, and "Play It Again" cards, each showing a 5x5 mini board with movement arrows. Laid out 8-up on US Letter landscape pages, ready to print and cut.
 
 ## About the design file
 `index.html` is a **self-contained, offline-capable HTML file** — open it directly in any browser, no build step, no server. It is a finished design artifact, not application source in a framework (React/Vue/etc). Treat it as the reference for exact visual output; recreate/adapt it in whatever stack you deploy with if you need a build pipeline, analytics, etc. For a static print deck, deploying this file as-is (see Deployment below) is usually the simplest correct answer.
