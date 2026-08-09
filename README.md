@@ -4,7 +4,7 @@
 A 56-card printable teaching deck (No Stress Chess style) for learning how chess pieces move. Pawn, Knight, Bishop, Rook, Queen, King, and "Play It Again" cards, each showing a 5x5 mini board with movement arrows. Laid out 8-up on US Letter landscape pages, ready to print and cut.
 
 ## About the design file
-`Chess Moves Cards - Standalone.html` is a **self-contained, offline-capable HTML file** — open it directly in any browser, no build step, no server. It is a finished design artifact, not application source in a framework (React/Vue/etc). Treat it as the reference for exact visual output; recreate/adapt it in whatever stack you deploy with if you need a build pipeline, analytics, etc. For a static print deck, deploying this file as-is (see Deployment below) is usually the simplest correct answer.
+`index.html` is a **self-contained, offline-capable HTML file** — open it directly in any browser, no build step, no server. It is a finished design artifact, not application source in a framework (React/Vue/etc). Treat it as the reference for exact visual output; recreate/adapt it in whatever stack you deploy with if you need a build pipeline, analytics, etc. For a static print deck, deploying this file as-is (see Deployment below) is usually the simplest correct answer.
 
 ## Fidelity
 **High-fidelity.** Colors, typography, layout, arrow geometry, and card counts are final. Treat pixel/measurement values below as authoritative.
@@ -32,4 +32,4 @@ This is a static file — no backend, no build. Any of these work:
 3. **Printing**: the page already responds correctly to the browser's native print dialog (Cmd/Ctrl+P) — no extra print CSS needed once deployed.
 
 ## Files in this handoff
-- `Chess Moves Cards - Standalone.html` — the complete, self-contained design (open directly in a browser)
+- `index.html` — the complete, self-contained design (open directly in a browser)
