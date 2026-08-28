@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Random Chess Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf6ee;
+    --card-bg: #fffdf8;
+    --card-border: #a3907a;
+    --ink: #2b2420;
+    --caption-ink: #4a3f35;
+    --board-border: #6b4a2f;
+    --light: #efe0c3;
+    --dark: #b98657;
+    --red: #b3453a;
+    --blue: #3d6b96;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--ink);
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+  }
+
+  #back-link {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    left: max(14px, env(safe-area-inset-left));
+    z-index: 10;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--caption-ink);
+    text-decoration: none;
+    background: rgba(255, 253, 248, 0.85);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  #back-link:hover { color: var(--blue); }
+
+  #card {
+    aspect-ratio: 5 / 7;
+    width: min(92vw, calc(92dvh * 5 / 7));
+    height: auto;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.12s ease;
+  }
+  #card:active { transform: scale(0.97); }
+
+  #card.swap { animation: swap 0.22s ease; }
+  @keyframes swap {
+    0% { opacity: 1; transform: scale(1); }
+    45% { opacity: 0.25; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    border: clamp(2px, 0.5vmin, 4px) dashed var(--card-border);
+    border-radius: 4vmin;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4vmin 3vmin;
+  }
+
+  .card-name {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: clamp(20px, 5.2vmin, 52px);
+    letter-spacing: 0.01em;
+    text-align: center;
+  }
+
+  .card-art {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .card-art svg { width: min(78%, 78%); height: auto; display: block; }
+
+  .card-caption {
+    font-weight: 600;
+    font-size: clamp(13px, 2.4vmin, 24px);
+    line-height: 1.3;
+    text-align: center;
+    color: var(--caption-ink);
+    max-width: 92%;
+  }
+
+  #hint {
+    position: fixed;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--caption-ink);
+    opacity: 0.65;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #hint.hidden { opacity: 0; }
+</style>
+</head>
+<body>
+  <a id="back-link" href="index.html">&larr; Deck</a>
+  <div id="card" role="button" tabindex="0" aria-label="Tap for another card">
+    <div class="card-inner">
+      <div class="card-name" id="card-name"></div>
+      <div class="card-art" id="card-art"></div>
+      <div class="card-caption" id="card-caption"></div>
+    </div>
+  </div>
+  <div id="hint">Tap the card for another one</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var RED = '#b3453a';
+  var BLUE = '#3d6b96';
+  var LIGHT = '#efe0c3';
+  var DARK = '#b98657';
+
+  // Reduced-pawn weighting: pawn halved from the physical deck's count (26 -> 13);
+  // every other type keeps its real-deck count.
+  var WEIGHTS = [
+    { type: 'pawn', weight: 13 },
+    { type: 'knight', weight: 6 },
+    { type: 'bishop', weight: 6 },
+    { type: 'rook', weight: 6 },
+    { type: 'queen', weight: 3 },
+    { type: 'king', weight: 3 },
+    { type: 'repeat', weight: 6 }
+  ];
+
+  var CARDS = {
+    pawn: { name: 'Pawn', glyph: '♟', caption: 'Moves 1 square forward (2 on first move); captures diagonally.' },
+    knight: { name: 'Knight', glyph: '♞', caption: 'Moves in an L-shape: 2 squares one way, then 1 to the side.' },
+    bishop: { name: 'Bishop', glyph: '♝', caption: 'Slides diagonally, any distance, in any direction.' },
+    rook: { name: 'Rook', glyph: '♜', caption: 'Slides straight, any distance: up, down, left, or right.' },
+    queen: { name: 'Queen', glyph: '♛', caption: 'Slides any distance, any direction: straight or diagonal.' },
+    king: { name: 'King', glyph: '♚', caption: 'Moves 1 square in any direction.' },
+    repeat: { name: 'Play It Again', glyph: '', caption: 'Repeat the last card you drew — move the same type of piece again.' }
+  };
+
+  // --- geometry helpers, ported from the printable deck's card generator ---
+
+  function cellCenter(r, c) { return { x: c * 40 + 20, y: r * 40 + 20 }; }
+
+  function trim(sx, sy, ex, ey, startTrim, endTrim) {
+    var dx = ex - sx, dy = ey - sy;
+    var len = Math.hypot(dx, dy) || 1;
+    var ux = dx / len, uy = dy / len;
+    return { x1: sx + ux * startTrim, y1: sy + uy * startTrim, x2: ex - ux * endTrim, y2: ey - uy * endTrim };
+  }
+
+  function straightArrow(from, to, color, dash, startTrim, endTrim) {
+    startTrim = startTrim === undefined ? 16 : startTrim;
+    endTrim = endTrim === undefined ? 4 : endTrim;
+    var s = cellCenter(from[0], from[1]);
+    var e = cellCenter(to[0], to[1]);
+    var t = trim(s.x, s.y, e.x, e.y, startTrim, endTrim);
+    return { d: 'M' + t.x1 + ',' + t.y1 + ' L' + t.x2 + ',' + t.y2, color: color, dash: dash };
+  }
+
+  function knightArrow(from, to, color) {
+    var r = from[0], c = from[1];
+    var dr = to[0] - r, dc = to[1] - c;
+    var bend = Math.abs(dr) === 2 ? [r + dr, c] : [r, c + dc];
+    var s = cellCenter(r, c);
+    var b = cellCenter(bend[0], bend[1]);
+    var e = cellCenter(to[0], to[1]);
+    var t1 = trim(s.x, s.y, b.x, b.y, 16, 0);
+    var t2 = trim(b.x, b.y, e.x, e.y, 0, 4);
+    return { d: 'M' + t1.x1 + ',' + t1.y1 + ' L' + b.x + ',' + b.y + ' L' + t2.x2 + ',' + t2.y2, color: color, dash: 'none' };
+  }
+
+  function mark(edge, dv, color) {
+    var e = cellCenter(edge[0], edge[1]);
+    return { x: e.x + dv[0] * 26, y: e.y + dv[1] * 26, color: color };
+  }
+
+  function buildSquares() {
+    var sq = [];
+    for (var r = 0; r < 5; r++) {
+      for (var c = 0; c < 5; c++) {
+        sq.push({ x: c * 40, y: r * 40, fill: (r + c) % 2 === 0 ? LIGHT : DARK });
+      }
+    }
+    return sq;
+  }
+
+  function buildKing() {
+    var center = [2, 2];
+    var arrows = [];
+    for (var dr = -1; dr <= 1; dr++) {
+      for (var dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) continue;
+        arrows.push(straightArrow(center, [2 + dr, 2 + dc], RED, 'none'));
+      }
+    }
+    return { arrows: arrows, marks: [], pieceRC: center };
+  }
+
+  function buildKnight() {
+    var center = [2, 2];
+    var deltas = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]];
+    var arrows = deltas.map(function (d) { return knightArrow(center, [2 + d[0], 2 + d[1]], RED); });
+    return { arrows: arrows, marks: [], pieceRC: center };
+  }
+
+  function buildRook() {
+    var center = [2, 2];
+    var dirs = [
+      { to: [0, 2], dv: [0, -1] }, { to: [4, 2], dv: [0, 1] },
+      { to: [2, 0], dv: [-1, 0] }, { to: [2, 4], dv: [1, 0] }
+    ];
+    var arrows = dirs.map(function (d) { return straightArrow(center, d.to, RED, 'none'); });
+    var marks = dirs.map(function (d) { return mark(d.to, d.dv, RED); });
+    return { arrows: arrows, marks: marks, pieceRC: center };
+  }
+
+  function buildBishop() {
+    var center = [2, 2];
+    var k = 0.7071;
+    var dirs = [
+      { to: [0, 0], dv: [-k, -k] }, { to: [0, 4], dv: [k, -k] },
+      { to: [4, 0], dv: [-k, k] }, { to: [4, 4], dv: [k, k] }
+    ];
+    var arrows = dirs.map(function (d) { return straightArrow(center, d.to, RED, 'none'); });
+    var marks = dirs.map(function (d) { return mark(d.to, d.dv, RED); });
+    return { arrows: arrows, marks: marks, pieceRC: center };
+  }
+
+  function buildQueen() {
+    var r = buildRook(), b = buildBishop();
+    return { arrows: r.arrows.concat(b.arrows), marks: r.marks.concat(b.marks), pieceRC: [2, 2] };
+  }
+
+  function buildPawn() {
+    var p = [3, 2];
+    var arrows = [
+      straightArrow(p, [2, 2], BLUE, 'none'),
+      straightArrow([2, 2], [1, 2], BLUE, '6,5', 4, 4),
+      straightArrow(p, [2, 1], RED, '6,5'),
+      straightArrow(p, [2, 3], RED, '6,5')
+    ];
+    return { arrows: arrows, marks: [], pieceRC: p };
+  }
+
+  var BUILDERS = { pawn: buildPawn, knight: buildKnight, bishop: buildBishop, rook: buildRook, queen: buildQueen, king: buildKing };
+  var squares = buildSquares();
+  var uid = 0;
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function renderBoard(type) {
+    var data = BUILDERS[type]();
+    var pc = cellCenter(data.pieceRC[0], data.pieceRC[1]);
+    var id = uid++;
+    var redId = 'ah-red-' + id, blueId = 'ah-blue-' + id;
+
+    var svg = svgEl('svg', { viewBox: '-14 -14 228 228' });
+
+    var defs = svgEl('defs', {});
+    [[redId, RED], [blueId, BLUE]].forEach(function (m) {
+      var marker = svgEl('marker', { id: m[0], markerUnits: 'userSpaceOnUse', markerWidth: 10, markerHeight: 10, refX: 7, refY: 5, orient: 'auto' });
+      marker.appendChild(svgEl('path', { d: 'M0,0 L10,5 L0,10 Z', fill: m[1] }));
+      defs.appendChild(marker);
+    });
+    svg.appendChild(defs);
+
+    svg.appendChild(svgEl('rect', { x: 0, y: 0, width: 200, height: 200, fill: 'none', stroke: '#6b4a2f', 'stroke-width': 2 }));
+
+    squares.forEach(function (sq) {
+      svg.appendChild(svgEl('rect', { x: sq.x, y: sq.y, width: 40, height: 40, fill: sq.fill }));
+    });
+
+    var fo = svgEl('foreignObject', { x: pc.x - 20, y: pc.y - 20, width: 40, height: 40 });
+    var div = document.createElement('div');
+    div.style.cssText = 'width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:34px;color:#241f1a;line-height:1';
+    div.textContent = CARDS[type].glyph;
+    fo.appendChild(div);
+    svg.appendChild(fo);
+
+    data.arrows.forEach(function (a) {
+      var markerUrl = a.color === RED ? redId : blueId;
+      svg.appendChild(svgEl('path', {
+        d: a.d, fill: 'none', stroke: a.color, 'stroke-width': 3.2, 'stroke-linecap': 'round',
+        'stroke-dasharray': a.dash, 'marker-end': 'url(#' + markerUrl + ')'
+      }));
+    });
+
+    data.marks.forEach(function (m) {
+      var t = svgEl('text', { x: m.x, y: m.y, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 15, fill: m.color, 'font-weight': 700 });
+      t.textContent = '…';
+      svg.appendChild(t);
+    });
+
+    return svg;
+  }
+
+  function renderRepeatIcon() {
+    var svg = svgEl('svg', { viewBox: '0 0 100 100' });
+    svg.appendChild(svgEl('path', { d: 'M22,52 a28,28 0 1,1 9,19', fill: 'none', stroke: '#6b4a2f', 'stroke-width': 7, 'stroke-linecap': 'round' }));
+    svg.appendChild(svgEl('path', { d: 'M16,60 L30,73 L40,55 Z', fill: '#6b4a2f' }));
+    return svg;
+  }
+
+  // --- weighted random draw, excluding the currently shown type ---
+
+  function pickType(excludeType) {
+    var pool = WEIGHTS.filter(function (w) { return w.type !== excludeType; });
+    var total = pool.reduce(function (sum, w) { return sum + w.weight; }, 0);
+    var roll = Math.random() * total;
+    for (var i = 0; i < pool.length; i++) {
+      roll -= pool[i].weight;
+      if (roll <= 0) return pool[i].type;
+    }
+    return pool[pool.length - 1].type;
+  }
+
+  var nameEl = document.getElementById('card-name');
+  var artEl = document.getElementById('card-art');
+  var captionEl = document.getElementById('card-caption');
+  var cardEl = document.getElementById('card');
+  var hintEl = document.getElementById('hint');
+
+  var currentType = null;
+
+  function showType(type) {
+    currentType = type;
+    var info = CARDS[type];
+    nameEl.textContent = info.name;
+    captionEl.textContent = info.caption;
+    artEl.innerHTML = '';
+    artEl.appendChild(type === 'repeat' ? renderRepeatIcon() : renderBoard(type));
+  }
+
+  function draw() {
+    showType(pickType(currentType));
+    cardEl.classList.remove('swap');
+    // eslint-disable-next-line no-unused-expressions
+    void cardEl.offsetWidth; // restart the animation
+    cardEl.classList.add('swap');
+    if (!hintEl.classList.contains('hidden')) hintEl.classList.add('hidden');
+  }
+
+  cardEl.addEventListener('click', draw);
+  cardEl.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); draw(); }
+  });
+  document.getElementById('back-link').addEventListener('click', function (e) { e.stopPropagation(); });
+
+  showType(pickType(null));
+})();
+</script>
+</body>
+</html>
