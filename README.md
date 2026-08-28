@@ -20,8 +20,10 @@ one you're allowed to move.
 - **`level-2-rules.html`** &mdash; how-to-play page (Dutch) for the
   hand-of-3 variant: play a card whose piece can move, then tap it to refill.
   Links back to `level-2.html`.
-- **`level-3.html`** &mdash; placeholder ("coming soon") for the hand-of-5
-  variant. Not built yet.
+- **`level-3.html`** &mdash; same idea as Level 2, scaled up: 5 cards on top
+  (rotated 180&deg;) + 5 on the bottom. Links to `level-3-rules.html`.
+- **`level-3-rules.html`** &mdash; how-to-play page (Dutch) for the
+  hand-of-5 variant. Links back to `level-3.html`.
 
 Every page is a self-contained static HTML/CSS/JS file &mdash; no build
 step, no server required, no shared modules (the card/board-drawing logic is

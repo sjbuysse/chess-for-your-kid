@@ -1,204 +1,311 @@
 <!doctype html>
 <html lang="nl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hoe Speel Je Niveau Twee?</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Quicksand:wght@700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #faf6ee;
-    --ink: #2b2420;
-    --muted: #4a3f35;
-    --faint: #93816c;
-    --board-border: #6b4a2f;
-    --light: #efe0c3;
-    --dark: #b98657;
-    --red: #b3453a;
-    --blue: #3d6b96;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Nunito Sans', sans-serif;
-    line-height: 1.5;
-    padding-bottom: 48px;
-  }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hoe Speel Je Niveau Twee?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Quicksand:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #faf6ee;
+        --ink: #2b2420;
+        --muted: #4a3f35;
+        --faint: #93816c;
+        --board-border: #6b4a2f;
+        --light: #efe0c3;
+        --dark: #b98657;
+        --red: #b3453a;
+        --blue: #3d6b96;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Nunito Sans", sans-serif;
+        line-height: 1.5;
+        padding-bottom: 48px;
+      }
 
-  #nav {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: rgba(250, 246, 238, 0.92);
-    backdrop-filter: blur(4px);
-    padding: 14px max(16px, env(safe-area-inset-left));
-    border-bottom: 1px solid rgba(163, 144, 122, 0.35);
-  }
-  .nav-link {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--muted);
-    text-decoration: none;
-  }
-  .nav-link:active { color: var(--blue); }
+      #nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(250, 246, 238, 0.92);
+        backdrop-filter: blur(4px);
+        padding: 14px max(16px, env(safe-area-inset-left));
+        border-bottom: 1px solid rgba(163, 144, 122, 0.35);
+      }
+      .nav-link {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .nav-link:active {
+        color: var(--blue);
+      }
 
-  main {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 24px 20px 8px;
-  }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 24px 20px 8px;
+      }
 
-  h1 {
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 700;
-    font-size: 26px;
-    letter-spacing: 0.01em;
-  }
-  .subtitle {
-    color: var(--faint);
-    font-weight: 600;
-    font-size: 13px;
-    margin-top: 4px;
-    margin-bottom: 20px;
-  }
+      h1 {
+        font-family: "Quicksand", sans-serif;
+        font-weight: 700;
+        font-size: 26px;
+        letter-spacing: 0.01em;
+      }
+      .subtitle {
+        color: var(--faint);
+        font-weight: 600;
+        font-size: 13px;
+        margin-top: 4px;
+        margin-bottom: 20px;
+      }
 
-  h2 {
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 700;
-    font-size: 17px;
-    margin-top: 28px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; background: var(--red); }
+      h2 {
+        font-family: "Quicksand", sans-serif;
+        font-weight: 700;
+        font-size: 17px;
+        margin-top: 28px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        flex: none;
+        background: var(--red);
+      }
 
-  p { margin-bottom: 12px; font-size: 15px; }
+      p {
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
 
-  ul, ol { padding-left: 22px; margin-bottom: 12px; }
-  li { margin-bottom: 7px; font-size: 15px; }
+      ul,
+      ol {
+        padding-left: 22px;
+        margin-bottom: 12px;
+      }
+      li {
+        margin-bottom: 7px;
+        font-size: 15px;
+      }
 
-  #setup-board {
-    display: block;
-    width: min(78vw, 300px);
-    height: auto;
-    margin: 12px auto;
-  }
-  .caption {
-    text-align: center;
-    color: var(--faint);
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: -4px;
-  }
-</style>
-</head>
-<body>
-  <div id="nav">
-    <a class="nav-link" href="index.html">🏠</a>
-    <a class="nav-link" href="level-2.html">&larr; Terug naar de kaarten</a>
-  </div>
-  <main>
-    <h1>Hoe Speel Je Niveau Twee?</h1>
-    <p class="subtitle">Voor ouders die al schaken en dit aan hun kind willen leren</p>
+      #setup-board {
+        display: block;
+        width: min(78vw, 300px);
+        height: auto;
+        margin: 12px auto;
+      }
+      .caption {
+        text-align: center;
+        color: var(--faint);
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: -4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="nav">
+      <a class="nav-link" href="index.html">🏠</a>
+      <a class="nav-link" href="level-2.html">&larr; Terug naar de kaarten</a>
+    </div>
+    <main>
+      <h1>Hoe Speel Je Niveau Twee?</h1>
+      <p class="subtitle">
+        Voor ouders die al schaken en dit aan hun kind willen leren
+      </p>
 
-    <p>Net als in Niveau Een bepaalt een kaart welk <em>type</em> stuk je mag zetten &mdash; maar nu heb je een hand van 3 kaarten om uit te kiezen, in plaats van maar &eacute;&eacute;n. Leg de telefoon plat op tafel tussen de twee spelers: jouw 3 kaarten staan rechtop naar jou toe, die van je tegenstander naar hen toe (omgekeerd voor jou).</p>
+      <p>
+        Net als in Niveau Een bepaalt een kaart welk <em>type</em> stuk je mag
+        zetten &mdash; maar nu heb je een hand van 3 kaarten om uit te kiezen,
+        in plaats van maar &eacute;&eacute;n. Leg de telefoon plat op tafel
+        tussen de twee spelers: jouw 3 kaarten staan rechtop naar jou toe, die
+        van je tegenstander naar hen toe (omgekeerd voor jou).
+      </p>
 
-    <h2>Wat heb je nodig</h2>
-    <ul>
-      <li>Een schaakbord, opgesteld zoals bij &lsquo;Opstelling&rsquo; hieronder</li>
-      <li>2 sets schaakstukken</li>
-      <li>Deze webapp open op een telefoon of tablet, plat neergelegd tussen de spelers</li>
-    </ul>
+      <h2>Wat heb je nodig</h2>
+      <ul>
+        <li>
+          Een schaakbord, opgesteld zoals bij &lsquo;Opstelling&rsquo; hieronder
+        </li>
+        <li>2 sets schaakstukken</li>
+        <li>
+          Deze webapp open op een telefoon of tablet, plat neergelegd tussen de
+          spelers
+        </li>
+      </ul>
 
-    <h2>Als lesgever</h2>
-    <ul>
-      <li>Nog niet vertrouwd met kaarten en stukken? Begin eerst bij Niveau Een.</li>
-      <li>De keuze uit 3 kaarten maakt dit niveau minder van puur geluk afhankelijk &mdash; er is al een beetje strategie bij welke kaart je speelt.</li>
-      <li>Voelt dit vertrouwd? Stap dan gewoon over naar echt schaken.</li>
-    </ul>
+      <h2>Als lesgever</h2>
+      <ul>
+        <li>
+          Nog niet vertrouwd met kaarten en stukken? Begin eerst bij
+          <a href="level-1-rules.html">Niveau Een</a>.
+        </li>
+        <li>
+          De keuze uit 3 kaarten maakt dit niveau minder van puur geluk
+          afhankelijk &mdash; er is al een beetje strategie bij welke kaart je
+          speelt.
+        </li>
+      </ul>
 
-    <h2>Opstelling</h2>
-    <p>Zet de stukken op de gewone startpositie. Schuif dan bij beide spelers alvast twee pionnen naar voren: de <strong>d-pion 2 velden</strong> en de <strong>e-pion 1 veld</strong>.</p>
-    <svg id="setup-board" viewBox="0 0 208 208"></svg>
-    <p class="caption">Gemarkeerd: d4/e3 (wit) en d5/e6 (zwart) staan al zo klaar bij het begin.</p>
+      <h2>Opstelling</h2>
+      <p>
+        Zet de stukken op de gewone startpositie. Schuif dan bij beide spelers
+        alvast twee pionnen naar voren: de <strong>d-pion 2 velden</strong> en
+        de <strong>e-pion 1 veld</strong>.
+      </p>
+      <svg id="setup-board" viewBox="0 0 208 208"></svg>
+      <p class="caption">
+        Gemarkeerd: d4/e3 (wit) en d5/e6 (zwart) staan al zo klaar bij het
+        begin.
+      </p>
 
-    <h2><span class="dot"></span>Hoe werkt een beurt</h2>
-    <ol>
-      <li>Op je beurt zie je jouw 3 kaarten, rechtop naar jou toe.</li>
-      <li>Kies er &eacute;&eacute;n waarvan je het stuk kan zetten, en zet dat stuk volgens de normale regels. <em>(Loper-kaart &rarr; zet een loper.)</em></li>
-      <li>Tik daarna op die kaart: ze wordt vervangen door een nieuwe, willekeurige kaart.</li>
-      <li>Kan je met geen van je 3 kaarten zetten? Beurt voorbij, je hand blijft ongewijzigd.</li>
-      <li>&ldquo;Speel Opnieuw&rdquo; = zelfde type als de laatst gespeelde kaart, van jou of je tegenstander. <em>(Laatst een Paard gespeeld? Nu weer een paard.)</em></li>
-    </ol>
+      <h2><span class="dot"></span>Hoe werkt een beurt</h2>
+      <ol>
+        <li>Op je beurt zie je jouw 3 kaarten, rechtop naar jou toe.</li>
+        <li>
+          Kies er &eacute;&eacute;n waarvan je het stuk kan zetten, en zet dat
+          stuk volgens de normale regels.
+          <em>(Loper-kaart &rarr; zet een loper.)</em>
+        </li>
+        <li>
+          Tik daarna op die kaart: ze wordt vervangen door een nieuwe,
+          willekeurige kaart.
+        </li>
+        <li>
+          Kan je met geen van je 3 kaarten zetten? Beurt voorbij, je hand blijft
+          ongewijzigd.
+        </li>
+        <li>
+          &ldquo;Speel Opnieuw&rdquo; = zelfde type als de laatst gespeelde
+          kaart, van jou of je tegenstander.
+          <em>(Laatst een Paard gespeeld? Nu weer een paard.)</em>
+        </li>
+      </ol>
 
-    <h2>Winnen</h2>
-    <p>Je wint door de koning effectief te slaan &mdash; geen schaakmat, geen resigneren nodig.</p>
-  </main>
+      <h2>Winnen</h2>
+      <p>
+        Je wint door de koning effectief te slaan &mdash; geen schaakmat, geen
+        resigneren nodig.
+      </p>
+    </main>
 
-<script>
-(function () {
-  'use strict';
-  var LIGHT = '#efe0c3', DARK = '#b98657', BOARD_BORDER = '#6b4a2f', BLUE = '#3d6b96';
-  var CELL = 26;
+    <script>
+      (function () {
+        "use strict";
+        var LIGHT = "#efe0c3",
+          DARK = "#b98657",
+          BOARD_BORDER = "#6b4a2f",
+          BLUE = "#3d6b96";
+        var CELL = 26;
 
-  // row 0 = rank 8 (black back rank) ... row 7 = rank 1 (white back rank)
-  var GRID = [
-    ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
-    ['♟', '♟', '♟', '', '', '♟', '♟', '♟'],
-    ['', '', '', '', '♟', '', '', ''],
-    ['', '', '', '♟', '', '', '', ''],
-    ['', '', '', '♙', '', '', '', ''],
-    ['', '', '', '', '♙', '', '', ''],
-    ['♙', '♙', '♙', '', '', '♙', '♙', '♙'],
-    ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']
-  ];
-  // the advanced d/e pawns, highlighted: d5/e6 (black), d4/e3 (white)
-  var HIGHLIGHTS = [[2, 4], [3, 3], [4, 3], [5, 4]];
+        // row 0 = rank 8 (black back rank) ... row 7 = rank 1 (white back rank)
+        var GRID = [
+          ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
+          ["♟", "♟", "♟", "", "", "♟", "♟", "♟"],
+          ["", "", "", "", "♟", "", "", ""],
+          ["", "", "", "♟", "", "", "", ""],
+          ["", "", "", "♙", "", "", "", ""],
+          ["", "", "", "", "♙", "", "", ""],
+          ["♙", "♙", "♙", "", "", "♙", "♙", "♙"],
+          ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
+        ];
+        // the advanced d/e pawns, highlighted: d5/e6 (black), d4/e3 (white)
+        var HIGHLIGHTS = [
+          [2, 4],
+          [3, 3],
+          [4, 3],
+          [5, 4],
+        ];
 
-  function svgEl(tag, attrs) {
-    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-    for (var k in attrs) el.setAttribute(k, attrs[k]);
-    return el;
-  }
+        function svgEl(tag, attrs) {
+          var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+          for (var k in attrs) el.setAttribute(k, attrs[k]);
+          return el;
+        }
 
-  var svg = document.getElementById('setup-board');
-  svg.appendChild(svgEl('rect', { x: 0, y: 0, width: 208, height: 208, fill: 'none', stroke: BOARD_BORDER, 'stroke-width': 2 }));
+        var svg = document.getElementById("setup-board");
+        svg.appendChild(
+          svgEl("rect", {
+            x: 0,
+            y: 0,
+            width: 208,
+            height: 208,
+            fill: "none",
+            stroke: BOARD_BORDER,
+            "stroke-width": 2,
+          }),
+        );
 
-  for (var r = 0; r < 8; r++) {
-    for (var c = 0; c < 8; c++) {
-      svg.appendChild(svgEl('rect', { x: c * CELL, y: r * CELL, width: CELL, height: CELL, fill: (r + c) % 2 === 0 ? LIGHT : DARK }));
-    }
-  }
+        for (var r = 0; r < 8; r++) {
+          for (var c = 0; c < 8; c++) {
+            svg.appendChild(
+              svgEl("rect", {
+                x: c * CELL,
+                y: r * CELL,
+                width: CELL,
+                height: CELL,
+                fill: (r + c) % 2 === 0 ? LIGHT : DARK,
+              }),
+            );
+          }
+        }
 
-  HIGHLIGHTS.forEach(function (h) {
-    svg.appendChild(svgEl('rect', {
-      x: h[1] * CELL + 1.5, y: h[0] * CELL + 1.5, width: CELL - 3, height: CELL - 3,
-      fill: 'none', stroke: BLUE, 'stroke-width': 2
-    }));
-  });
+        HIGHLIGHTS.forEach(function (h) {
+          svg.appendChild(
+            svgEl("rect", {
+              x: h[1] * CELL + 1.5,
+              y: h[0] * CELL + 1.5,
+              width: CELL - 3,
+              height: CELL - 3,
+              fill: "none",
+              stroke: BLUE,
+              "stroke-width": 2,
+            }),
+          );
+        });
 
-  for (var row = 0; row < 8; row++) {
-    for (var col = 0; col < 8; col++) {
-      var glyph = GRID[row][col];
-      if (!glyph) continue;
-      var t = svgEl('text', {
-        x: col * CELL + CELL / 2, y: row * CELL + CELL / 2,
-        'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 19, fill: '#2b2420'
-      });
-      t.textContent = glyph;
-      svg.appendChild(t);
-    }
-  }
-})();
-</script>
-</body>
+        for (var row = 0; row < 8; row++) {
+          for (var col = 0; col < 8; col++) {
+            var glyph = GRID[row][col];
+            if (!glyph) continue;
+            var t = svgEl("text", {
+              x: col * CELL + CELL / 2,
+              y: row * CELL + CELL / 2,
+              "text-anchor": "middle",
+              "dominant-baseline": "central",
+              "font-size": 19,
+              fill: "#2b2420",
+            });
+            t.textContent = glyph;
+            svg.appendChild(t);
+          }
+        }
+      })();
+    </script>
+  </body>
 </html>
