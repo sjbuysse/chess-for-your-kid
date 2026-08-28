@@ -37,16 +37,24 @@
   .row {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2.5vw;
-    padding: 1vh 2vw;
+    gap: 1.4vh;
+    padding: 0.6vh 2vw;
     min-height: 0;
   }
   .row.rotated { transform: rotate(180deg); }
 
+  .hand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3.5vw;
+  }
+
   .slot {
-    width: min(27vw, calc(40dvh * 5 / 7));
+    width: min(38vw, calc(19dvh * 5 / 7));
     aspect-ratio: 5 / 7;
     cursor: pointer;
     user-select: none;
@@ -75,7 +83,7 @@
   .slot-name {
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
-    font-size: clamp(10px, 2.6vmin, 19px);
+    font-size: clamp(12px, 3vmin, 22px);
     letter-spacing: 0.01em;
     text-align: center;
   }
@@ -92,7 +100,7 @@
 
   .slot-caption {
     font-weight: 600;
-    font-size: clamp(7px, 1.25vmin, 12px);
+    font-size: clamp(8px, 1.5vmin, 14px);
     line-height: 1.25;
     text-align: center;
     color: var(--caption-ink);
@@ -389,10 +397,21 @@
     return state;
   }
 
-  var topRow = document.getElementById('row-top');
-  var bottomRow = document.getElementById('row-bottom');
-  for (var i = 0; i < 3; i++) buildSlot(topRow);
-  for (var j = 0; j < 3; j++) buildSlot(bottomRow);
+  // Each player's 3-card hand is split across two sub-rows (2 then 1) so
+  // the cards can be drawn bigger than a single row of 3 would allow.
+  var HAND_SPLIT = [2, 1];
+
+  function buildHand(rowEl) {
+    HAND_SPLIT.forEach(function (count) {
+      var handRow = document.createElement('div');
+      handRow.className = 'hand-row';
+      rowEl.appendChild(handRow);
+      for (var i = 0; i < count; i++) buildSlot(handRow);
+    });
+  }
+
+  buildHand(document.getElementById('row-top'));
+  buildHand(document.getElementById('row-bottom'));
 
   document.getElementById('mid-nav').addEventListener('click', function (e) { e.stopPropagation(); });
 })();

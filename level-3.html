@@ -37,16 +37,24 @@
   .row {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.4vw;
-    padding: 0.8vh 1.5vw;
+    gap: 1.2vh;
+    padding: 0.6vh 1.5vw;
     min-height: 0;
   }
   .row.rotated { transform: rotate(180deg); }
 
+  .hand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.2vw;
+  }
+
   .slot {
-    width: min(17vw, calc(40dvh * 5 / 7));
+    width: min(28vw, calc(19dvh * 5 / 7));
     aspect-ratio: 5 / 7;
     cursor: pointer;
     user-select: none;
@@ -75,7 +83,7 @@
   .slot-name {
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
-    font-size: clamp(8px, 2vmin, 15px);
+    font-size: clamp(9px, 2.3vmin, 17px);
     letter-spacing: 0.01em;
     text-align: center;
   }
@@ -92,7 +100,7 @@
 
   .slot-caption {
     font-weight: 600;
-    font-size: clamp(6px, 1vmin, 10px);
+    font-size: clamp(7px, 1.2vmin, 11px);
     line-height: 1.2;
     text-align: center;
     color: var(--caption-ink);
@@ -135,7 +143,6 @@
   var BLUE = '#3d6b96';
   var LIGHT = '#efe0c3';
   var DARK = '#b98657';
-  var SLOTS_PER_ROW = 5;
 
   // Same weighting as Level 1 & 2: pawn halved from the physical deck's
   // count (26 -> 13), every other type keeps its real-deck count.
@@ -390,10 +397,21 @@
     return state;
   }
 
-  var topRow = document.getElementById('row-top');
-  var bottomRow = document.getElementById('row-bottom');
-  for (var i = 0; i < SLOTS_PER_ROW; i++) buildSlot(topRow);
-  for (var j = 0; j < SLOTS_PER_ROW; j++) buildSlot(bottomRow);
+  // Each player's 5-card hand is split across two sub-rows (3 then 2) so
+  // the cards can be drawn bigger than a single row of 5 would allow.
+  var HAND_SPLIT = [3, 2];
+
+  function buildHand(rowEl) {
+    HAND_SPLIT.forEach(function (count) {
+      var handRow = document.createElement('div');
+      handRow.className = 'hand-row';
+      rowEl.appendChild(handRow);
+      for (var i = 0; i < count; i++) buildSlot(handRow);
+    });
+  }
+
+  buildHand(document.getElementById('row-top'));
+  buildHand(document.getElementById('row-bottom'));
 
   document.getElementById('mid-nav').addEventListener('click', function (e) { e.stopPropagation(); });
 })();
