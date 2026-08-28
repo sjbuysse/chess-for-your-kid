@@ -39,13 +39,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* flex-start (not center): row-bottom's content then sits right against
-       #mid-nav; row-top gets the same rule but its whole box is rotated
-       180deg, which flips flex-start to the opposite edge — also landing
-       its content against #mid-nav. */
+    /* flex-start (not center): leftover space collects at padding-bottom
+       instead of splitting evenly. row-top's whole box is then rotated
+       180deg, which flips which edge padding-top/bottom land on, so both
+       rows end up with the same near-#mid-nav vs. outer-edge gap sizes. */
     justify-content: flex-start;
     gap: 1.4vh;
-    padding: 0.4vh 2vw;
+    padding: 10px 2vw 6px;
     min-height: 0;
   }
   .row.rotated { transform: rotate(180deg); }
@@ -58,7 +58,7 @@
   }
 
   .slot {
-    width: min(38vw, calc(19dvh * 5 / 7));
+    width: min(40vw, calc(21dvh * 5 / 7));
     aspect-ratio: 5 / 7;
     cursor: pointer;
     user-select: none;
@@ -108,7 +108,7 @@
     align-items: center;
     justify-content: center;
     gap: 14px;
-    padding: 4px 0;
+    padding: 6px 0;
   }
   .nav-link {
     font-weight: 700;
