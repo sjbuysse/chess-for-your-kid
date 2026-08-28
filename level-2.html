@@ -98,15 +98,6 @@
   }
   .slot-art svg { width: 78%; height: auto; display: block; }
 
-  .slot-caption {
-    font-weight: 600;
-    font-size: clamp(8px, 1.5vmin, 14px);
-    line-height: 1.25;
-    text-align: center;
-    color: var(--caption-ink);
-    max-width: 94%;
-  }
-
   #mid-nav {
     flex: none;
     display: flex;
@@ -362,21 +353,17 @@
     name.className = 'slot-name';
     var art = document.createElement('div');
     art.className = 'slot-art';
-    var caption = document.createElement('div');
-    caption.className = 'slot-caption';
     inner.appendChild(name);
     inner.appendChild(art);
-    inner.appendChild(caption);
     slot.appendChild(inner);
     rowEl.appendChild(slot);
 
-    var state = { type: null, el: slot, nameEl: name, artEl: art, captionEl: caption };
+    var state = { type: null, el: slot, nameEl: name, artEl: art };
 
     function show(type) {
       state.type = type;
       var info = CARDS[type];
       name.textContent = info.name;
-      caption.textContent = info.caption;
       art.innerHTML = '';
       art.appendChild(type === 'repeat' ? renderRepeatIcon() : renderBoard(type));
     }
